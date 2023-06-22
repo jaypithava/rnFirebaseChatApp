@@ -1,7 +1,9 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {TextInput} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import uuid from 'react-native-uuid';
 
 const Signup = () => {
   const navigation = useNavigation();
@@ -11,6 +13,51 @@ const Signup = () => {
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  const userId = uuid.v4();
+
+  //Create a new User In Firebase Database
+  const registerUser = () => {
+    firestore()
+      .collection('users')
+      .doc(userId)
+      .set({
+        name: name,
+        email: email,
+        mobile: mobile,
+        password: password,
+        userId: userId,
+      })
+      .then(res => {
+        navigation.navigate('Login');
+      })
+      .catch(err => {
+        Alert.alert('Something went wrong', err);
+      });
+  };
+
+  const validation = () => {
+    let isValid = true;
+    if (name == '') {
+      isValid = false;
+    }
+    if (email == '') {
+      isValid = false;
+    }
+    if (mobile == '') {
+      isValid = false;
+    }
+    if (password == '') {
+      isValid = false;
+    }
+    if (confirmPassword == '') {
+      isValid = false;
+    }
+    if (confirmPassword !== password) {
+      isValid = false;
+    }
+    return isValid;
+  };
 
   return (
     <View style={styles.container}>
@@ -31,6 +78,7 @@ const Signup = () => {
         placeholder="Enter Mobile"
         keyboardType="number-pad"
         style={[styles.input, {marginTop: 20}]}
+        maxLength={10}
         value={mobile}
         onChangeText={txt => setMobile(txt)}
       />
@@ -46,7 +94,15 @@ const Signup = () => {
         value={confirmPassword}
         onChangeText={txt => setConfirmPassword(txt)}
       />
-      <TouchableOpacity style={styles.btn} onPress={() => {}}>
+      <TouchableOpacity
+        style={styles.btn}
+        onPress={() => {
+          if (validation()) {
+            registerUser();
+          } else {
+            Alert.alert('Please Enter Details');
+          }
+        }}>
         <Text style={styles.btnText}>SignUp</Text>
       </TouchableOpacity>
       <Text

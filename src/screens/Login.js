@@ -1,13 +1,31 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
 import {TextInput} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
 
 const Login = () => {
   const navigate = useNavigation();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  //Check User is Available in the Firebase Database
+  const loginUser = () => {
+    firestore()
+      .collection('users')
+      .where('email', '==', email)
+      .get()
+      .then(res => {
+        if (res.docs !== []) {
+          console.log(JSON.stringify(res.docs[0].data()));
+        }
+      })
+      .catch(err => {
+        Alert.alert('User Not Found');
+        console.log(err);
+      });
+  };
 
   return (
     <View style={styles.container}>
@@ -24,7 +42,11 @@ const Login = () => {
         value={password}
         onChangeText={txt => setPassword(txt)}
       />
-      <TouchableOpacity style={styles.btn} onPress={() => {}}>
+      <TouchableOpacity
+        style={styles.btn}
+        onPress={() => {
+          loginUser();
+        }}>
         <Text style={styles.btnText}>Login</Text>
       </TouchableOpacity>
       <Text
