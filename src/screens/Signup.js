@@ -108,7 +108,7 @@ const Signup = () => {
       <Text
         style={styles.orLogin}
         onPress={() => {
-          navigation.navigate('Login');
+          navigation.goBack();
         }}>
         Or Login
       </Text>
