@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import React, {useState, useEffect, useCallback} from 'react';
 import {GiftedChat} from 'react-native-gifted-chat';
 import {useRoute} from '@react-navigation/native';
@@ -46,6 +46,7 @@ const Chat = () => {
   return (
     <View style={{flex: 1}}>
       <GiftedChat
+        containerStyle={styles.inputToolbarBackground}
         messages={messages}
         onSend={messages => onSend(messages)}
         user={{
@@ -57,3 +58,9 @@ const Chat = () => {
 };
 
 export default Chat;
+
+const styles = StyleSheet.create({
+  inputToolbarBackground: {
+    backgroundColor: 'black',
+  },
+});
