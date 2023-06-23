@@ -5,6 +5,7 @@ import Splash from '../screens/Splash';
 import Signup from '../screens/Signup';
 import Login from '../screens/Login';
 import Main from '../screens/Main';
+import Chat from '../screens/Chat';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,11 @@ const AppNavigator = () => {
           name="MainScreen"
           component={Main}
           options={{headerShown: false}}
+        />
+         <Stack.Screen
+          name="Chat"
+          component={Chat}
+          options={{headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>

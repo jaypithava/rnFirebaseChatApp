@@ -10,15 +10,19 @@ import React, {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loader from '../components/Loader';
-
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
+let id = '';
 const Home = () => {
   const [users, setUsers] = useState([]);
+  const navigation = useNavigation();
   const [visible, setVisible] = useState(false);
   useEffect(() => {
     getUsers();
   }, []);
 
   const getUsers = async () => {
+    id = await AsyncStorage.getItem('UserId');
     let tempData = [];
     setVisible(true);
     const email = await AsyncStorage.getItem('Email');
@@ -48,13 +52,17 @@ const Home = () => {
         data={users}
         renderItem={({item, index}) => {
           return (
-            <View style={styles.userItems}>
+            <TouchableOpacity
+              style={styles.userItems}
+              onPress={() => {
+                navigation.navigate('Chat', {data: item, id: id});
+              }}>
               <Image
                 source={require('../Assets/user.png')}
                 style={styles.userLogo}
               />
               <Text style={styles.itemName}>{item.name}</Text>
-            </View>
+            </TouchableOpacity>
           );
         }}
       />
